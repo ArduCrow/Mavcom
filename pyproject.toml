@@ -16,7 +16,7 @@ classifiers = [
 ]
 keywords = ["mavlink", "drone", "drones", "pymavlink", "dronekit"]
 dependencies = [
-    "pymavlink >= 2.1",
+    "pymavlink",
 ]
 requires-python = ">=3.9"
 
