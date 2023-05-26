@@ -1,9 +1,30 @@
 [build-system]
-requires = ['setuptools>=42']
-build-backend = 'setuptools.build_meta'
+requires      = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
 
 [project]
-name = "Mavcom"
-dependencies = [
-"pymavlink >= 2.1.0",
+name = "mavcom"
+version = "0.0.1"
+description = "A python package that creates a simplified programming interface for controlling Mavlink-capable flight controllers"
+readme = "README.md"
+authors = [{ name = "Mavscient", email = "mavscient@xee4c.33mail.com" }]
+license = { file = "LICENSE" }
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
 ]
+keywords = ["mavlink", "drone", "drones", "pymavlink", "dronekit"]
+dependencies = [
+    "pymavlink >= 2.1.0",
+]
+requires-python = ">=3.9"
+
+[project.optional-dependencies]
+dev = ["black", "bumpver", "isort", "pip-tools", "pytest"]
+
+[project.urls]
+Homepage = "https://github.com/realpython/reader"
+
+[project.scripts]
+realpython = "reader.__main__:main"
