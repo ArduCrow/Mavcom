@@ -10,12 +10,17 @@ Provides a simplified python interface for controlling Mavlink capable flight co
 
 ## Basic Usage
 
+This is an example of how to use Mavcom with a simulated vehicle.
+
+Run SITL:
+```sim_vehicle.py -v ArduCopter```
+
 ```python
-import mavcom
+from mavcom import mavcom
 import time
 
 vehicle = mavcom.Mavcom(
-    connection_path = "/dev/ttyS0",
+    connection_path = "127.0.0.1:14551",
 )
 
 vehicle.start()
@@ -25,5 +30,10 @@ while not vehicle.ready:
     time.sleep(1)
 
 vehicle.motors_armed = True
+while not vehicle.motors_armed:
+    print("Waiting for motors to spin up...")
+    time.sleep(1)
+    
+vehicle.flight_mode = "GUIDED"
 vehicle.takeoff(alt=10)
 ```
