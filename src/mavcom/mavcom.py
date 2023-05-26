@@ -10,8 +10,8 @@ from pymavlink.dialects.v10 import ardupilotmega
 class Mavcom:
 
     def __init__(self,
-                 controller: object,
-                 required_message_types: List[str],
+                 controller: object = None,
+                 required_message_types: List[str] = [],
                  connection_path: str = "/dev/ttyS0",
                  baud: int = 921600
                  ):

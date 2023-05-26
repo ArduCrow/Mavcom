@@ -10,3 +10,20 @@ Provides a simplified python interface for controlling Mavlink capable flight co
 
 ## Basic Usage
 
+```
+import mavcom
+import time
+
+vehicle = mavcom.Mavcom(
+    connection_path = "/dev/ttyS0",
+)
+
+vehicle.start()
+
+while not vehicle.ready:
+    print("Waiting for vehicle to initialise...")
+    time.sleep(1)
+
+vehicle.motors_armed = True
+vehicle.takeoff(alt=10)
+```
