@@ -10,7 +10,7 @@ Provides a simplified python interface for controlling Mavlink capable flight co
 
 ## Basic Usage
 
-```
+```python
 import mavcom
 import time
 
