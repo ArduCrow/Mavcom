@@ -39,6 +39,7 @@ class Mavcom:
 
     def start(self):
         """Starts listening to the Mavlink messages from the flight controller."""
+        print("MAVCOM: Mavcom active")
         self.telemetry_thread.start()
 
     def get_heartbeat(self):
@@ -89,6 +90,7 @@ class Mavcom:
                                                0, 0, 0, 0, 0, 0, 0, alt)
 
     def travel(self, location: tuple[float], alt: int, groundspeed: int = None):
+        print(f"MAVCOM: Travel to {location}, {alt}m AGL relative")
         self.connection.mav.mission_item_send(0, 0, 0, mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT,
                                            mavutil.mavlink.MAV_CMD_NAV_WAYPOINT, 2, 0, 0,
                                            0, 0, 0, location[0], location[1],
