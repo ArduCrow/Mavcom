@@ -13,6 +13,7 @@ Provides a simplified python interface for controlling Mavlink capable flight co
 This is an example of how to use Mavcom with a simulated vehicle.
 
 Run SITL:
+
 ```sim_vehicle.py -v ArduCopter```
 
 ```python
