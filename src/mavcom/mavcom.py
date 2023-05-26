@@ -37,7 +37,8 @@ class Mavcom:
         self.connection = mavutil.mavlink_connection(connection_path, baud=baud)
         self.get_heartbeat()
 
-    def start_monitoring(self):
+    def start(self):
+        """Starts listening to the Mavlink messages from the flight controller."""
         self.telemetry_thread.start()
 
     def get_heartbeat(self):
