@@ -1,6 +1,13 @@
 from mavcom import mavcom
+import multiprocessing
 import time
+import os
 
+def sim_vehicle():
+    os.system("sim_vehicle.py -v ArduCopter")
+
+sim = multiprocessing.Process(target=sim_vehicle)
+sim.start()
 
 vehicle = mavcom.Mavcom(
     connection_path="127.0.0.1:14551"
