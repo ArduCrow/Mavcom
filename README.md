@@ -1,6 +1,6 @@
 # MAVCOM
 
-Mavlink Communicator
+### Mavlink Communicator
 
 Provides a simplified python interface for controlling Mavlink capable flight controllers.
 
