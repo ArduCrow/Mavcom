@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mavcom"
-version = "0.0.1"
+version = "0.0.2"
 description = "A python package that creates a simplified programming interface for controlling Mavlink-capable flight controllers"
 readme = "README.md"
 authors = [{ name = "Mavscient", email = "mavscient@xee4c.33mail.com" }]
@@ -16,15 +16,15 @@ classifiers = [
 ]
 keywords = ["mavlink", "drone", "drones", "pymavlink", "dronekit"]
 dependencies = [
-    "pymavlink >= 2.1.0",
+    "pymavlink >= 2.1",
 ]
 requires-python = ">=3.9"
 
 [project.optional-dependencies]
-dev = ["black", "bumpver", "isort", "pip-tools", "pytest"]
+dev = ["black", "pip-tools", "pytest"]
 
 [project.urls]
-Homepage = "https://github.com/realpython/reader"
+Homepage = "https://github.com/Mavscient/Mavcom"
 
 [project.scripts]
 realpython = "reader.__main__:main"
