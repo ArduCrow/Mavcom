@@ -5,3 +5,11 @@ dist
 .env
 *.egg*
 .pypirc
+
+# SITL testing files
+logs/
+terrain/
+eeprom.bin
+mav.parm
+mav.tlog
+mav.tlog.raw
