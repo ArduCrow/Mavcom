@@ -9,3 +9,6 @@
 1.1.1
 - Changed mavcom.py to mavcontrol.py
 - Added docstrings to Mavcom object
+
+1.1.2
+- Recorder object takes upstream Mavcom object as controller, not instance of the caller instance
