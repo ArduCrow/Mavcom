@@ -1,8 +1,7 @@
-from mavcom import mavcom
+from mavcom.mavcontrol import Mavcom
 from multiprocessing import Process
 import time
 import os
-import atexit
 
 def sim_vehicle():
     os.system("gnome-terminal --tab -e 'bash -c \"sim_vehicle.py -v ArduCopter; exec bash\"'")
@@ -11,7 +10,7 @@ sim = Process(target=sim_vehicle, daemon=True)
 sim.start()
 print(sim.pid)
 
-vehicle = mavcom.Mavcom(
+vehicle = Mavcom(
     connection_path="127.0.0.1:14551"
 )
 vehicle.start()
