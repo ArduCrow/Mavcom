@@ -32,7 +32,7 @@ class Mavcom:
         self._motors_armed = False
         self.airframe = None
         
-        self.telemetry_thread = threading.Thread(target=self.monitor_mavlink_messages)
+        self.telemetry_thread = threading.Thread(target=self.monitor_mavlink_messages, daemon=True)
 
         self.connection = mavutil.mavlink_connection(connection_path, baud=baud)
         self.get_heartbeat()
