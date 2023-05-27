@@ -106,10 +106,10 @@ class Recorder():
         """
         while self.video_active:
             try:
-                alt = self.controller.mavstream.vehicle_state.alt
-                speed = self.controller.mavstream.vehicle_state.groundspeed
+                alt = self.controller.vehicle_state.alt
+                speed = self.controller.vehicle_state.groundspeed
                 self.video_mod("top_text", f"{socket.gethostname()} Alt: {alt} Speed: {speed}")
             except Exception as e:
-                print(e)
+                self.video_mod("top_text", f"{socket.gethostname()}")
                 pass
             time.sleep(0.5)
