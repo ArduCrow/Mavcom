@@ -1,3 +1,7 @@
 1.0.1
 - Telemetry thread is now a daemon thread, so that upstream application can exit when finished
 - Small delay when start() function is called, to allow some time for mavlink messages to come from the flight controller and populate current_values
+
+1.0.2
+- Added video module
+- Recorder object in video module that allows recording and overlaying telemetry onto the video, which is saved in the calling directory
