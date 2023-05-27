@@ -41,6 +41,7 @@ class Mavcom:
         """Starts listening to the Mavlink messages from the flight controller."""
         print("MAVCOM: Mavcom active")
         self.telemetry_thread.start()
+        time.sleep(3)
 
     def get_heartbeat(self):
         print("MAVCOM: Waiting for heartbeat...")
