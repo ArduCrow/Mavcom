@@ -1,4 +1,4 @@
-from mavcom import mavcom
+from mavcom import mavcontrol
 from multiprocessing import Process
 import time
 import os
@@ -11,7 +11,7 @@ sim = Process(target=sim_vehicle, daemon=True)
 sim.start()
 print(sim.pid)
 
-vehicle = mavcom.Mavcom(
+vehicle = mavcontrol.Mavcom(
     connection_path="127.0.0.1:14551"
 )
 vehicle.start()
