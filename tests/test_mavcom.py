@@ -2,7 +2,6 @@ from mavcom.mavcontrol import Mavcom
 from multiprocessing import Process
 import time
 import os
-import atexit
 
 def sim_vehicle():
     os.system("gnome-terminal --tab -e 'bash -c \"sim_vehicle.py -v ArduCopter; exec bash\"'")
