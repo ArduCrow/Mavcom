@@ -37,7 +37,7 @@ class Recorder():
         
         
         self.recording = threading.Thread(target=self.record, daemon=True)
-        self.hud_update_thread = threading.Thread(target=self.hud_updater, daemon=True)
+        self.hud_updates = threading.Thread(target=self.hud_updater, daemon=True)
         
         os.makedirs("recordings", exist_ok=True)
         if filename is None:
