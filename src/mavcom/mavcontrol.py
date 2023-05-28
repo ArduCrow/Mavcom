@@ -46,12 +46,13 @@ class Mavcom:
         self.required_message_types = required_message_types + [m for m in mandatory_message_types if m not in required_message_types]
         self.current_values = defaultdict(lambda: None)
         self.controller = controller
+        has_controller = True if controller else False
         
         self._flight_mode = None
         self._motors_armed = False
         self.airframe = None
         
-        self.telemetry_thread = threading.Thread(target=self._monitor_mavlink_messages, daemon=True)
+        self.telemetry_thread = threading.Thread(target=self._monitor_mavlink_messages, daemon=has_controller)
 
         self.connection = mavutil.mavlink_connection(connection_path, baud=baud)
         self._get_heartbeat()
@@ -60,6 +61,9 @@ class Mavcom:
         """
         Starts listening to the Mavlink messages from the flight controller. Has a small delay
         so that Mavcom can populate required data types. Call this function first.
+        
+        If a controller object was passed to this Mavcom instance, the telemetry thread will run as a daemon
+        so that it exits when the caller object terminates.
         """
         print("MAVCOM: Mavcom active")
         self.telemetry_thread.start()
