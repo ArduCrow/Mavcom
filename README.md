@@ -17,7 +17,7 @@ Run SITL:
 ```sim_vehicle.py -v ArduCopter```
 
 ```python
-from mavcom import mavcom
+from mavcom import mavcontrol
 import time
 
 vehicle = mavcom.Mavcom(
