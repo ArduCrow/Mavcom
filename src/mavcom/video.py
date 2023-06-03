@@ -11,8 +11,8 @@ class Recorder():
     Parameters
     ----------
     
-    - `controller`: This should be the upstream class that instantiates the Recorder instance. By passing itself to
-    the Recorder instance, the Recorder can access its attributes.
+    - `controller`: This should be the upstream Mavcom instance of whatever object or script is controlling the vehicle. 
+    By passing itself to the Recorder instance, the Recorder can access its attributes.
     
     - `top_text`: text that will be overlaid on this position of the video capture.
     
