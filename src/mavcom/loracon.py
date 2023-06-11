@@ -32,7 +32,7 @@ class LoraController:
         # radio is half duplex; we need to stop the listener if we are transmitting
         self.transmitting = False
 
-        self.radio = serial.Serial(port=f'/dev/{self.port}',baudrate = 9600,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,bytesize=serial.EIGHTBITS,timeout=1)
+        self.radio = serial.Serial(port=f'{self.port}',baudrate = 9600,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,bytesize=serial.EIGHTBITS,timeout=1)
 
         self.listener = threading.Thread(target=self.receive)
         
@@ -136,7 +136,7 @@ class LoraController:
             message_processed = False
             received_data = self.radio.readline()
             if not self.transmitting and received_data and not message_processed:
-                print(f"receiver {socket.gethostname()}: received something")
+                print(f"receiver {socket.gethostname()}: received something: {received_data}")
                 # message_processed = False
                 try:
 
@@ -267,3 +267,4 @@ class UnknownTxMode(Exception):
 
 if __name__ == "__main__":
     lora = LoraController()
+    lora.start()
