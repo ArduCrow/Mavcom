@@ -41,7 +41,8 @@ class Mavcom:
             "GPS_STATUS",
             "GPS_RAW_INT",
             "EKF_STATUS_REPORT",
-            "VFR_HUD"
+            "VFR_HUD",
+            "HOME_POSITION"
         ]
         self.required_message_types = required_message_types + [m for m in mandatory_message_types if m not in required_message_types]
         self.current_values = defaultdict(lambda: None)
