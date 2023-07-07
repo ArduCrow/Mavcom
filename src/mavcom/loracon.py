@@ -50,12 +50,12 @@ class LoraController:
         Listens for an ack, and reports back if no ack. This terminates efforts to transmit
         this message.
         """
-        print(msg_dict)
+        print("MAVCOM: Lora message - ", msg_dict)
         if self.check_rebroadcast(msg_dict):
             self.transmit(msg=msg_dict, broadcast=True)
             self.set_lora_msg_to_rebroadcast(timestamp=msg_dict["t"])
         else:
-            print("Already rebroadcasted this")
+            print("MAVCOM: Already rebroadcasted this")
             
     def check_rebroadcast(self, msg):
         """Returns True if the message should be rebroadcasted"""
@@ -83,30 +83,30 @@ class LoraController:
         if send_ack: msg = ack
         
         self.transmitting = True
-        print("transmit...")
+        print("MAVCOM: Lora transmit...")
         msg = self.convert_message(msg)
         if send_ack:
             encoded_msg = bytes(msg,'utf-8')
             s = self.radio.write(encoded_msg)
             self.transmitting = False
-            print(f"transmitter {socket.gethostname()}: sent back ack")
+            print(f"MAVCOM: Lora - transmitter {socket.gethostname()}: sent back ack")
             return True
         else:
             encoded_msg = bytes(msg,'utf-8')
             s = self.radio.write(encoded_msg)
-            print(f"transmitter {socket.gethostname()}: sent message")
+            print(f"MAVCOM: Lora - transmitter {socket.gethostname()}: sent message")
             self.transmitting = False
             self.awaiting_ack = True
 
             counter = self.ack_timeout
             while self.awaiting_ack:
-                print("Waiting for Ack from recipient...")
+                print("MAVCOM: Lora - Waiting for Ack from recipient...")
                 time.sleep(1)
 
                 if counter == 0:
-                    print("No ack from recipient")
+                    print("MAVCOM: Lora - No ack from recipient")
                     print(
-                        "On receiving the following exception sender/signaller upstream function should now call lora broadcast function, if mesh mode is True"
+                        "MAVCOM: Lora - On receiving the following exception sender/signaller upstream function should now call lora broadcast function, if mesh mode is True"
                     )
                     self.awaiting_ack = False
                     raise RecipientNotAck
@@ -114,7 +114,7 @@ class LoraController:
                 counter -= 1
             rcvd_str = msg.decode(encoding="utf-8")
             rcvd_msg = json.loads(rcvd_str)
-            print(f"transmitter {socket.gethostname()}: ack received, reactivate listening...")
+            print(f"MAVCOM: Lora - transmitter {socket.gethostname()}: ack received, reactivate listening...")
             
             return True
 
@@ -130,13 +130,13 @@ class LoraController:
         """
         message_processed = False
         time.sleep(1)
-        print("listening")
+        print("MAVCOM: Lora listening")
 
         while True:
             message_processed = False
             received_data = self.radio.readline()
             if not self.transmitting and received_data and not message_processed:
-                print(f"receiver {socket.gethostname()}: received something: {received_data}")
+                print(f"MAVCOM: Lora - receiver {socket.gethostname()}: received something: {received_data}")
                 # message_processed = False
                 try:
 
@@ -148,14 +148,14 @@ class LoraController:
 
                     # if rcvd_msg["u"] == socket.gethostname():
                     if rcvd_msg["u"] == socket.gethostname():
-                        print("this message is for ME")
+                        print("MAVCOM: Lora - this message is for ME")
                         print(rcvd_msg)
                         message_processed = True
                         self.store_lora_msg(message=rcvd_msg)
                         
                     elif rcvd_msg["t"] == "bu":
                         print(
-                            f"this message is for {rcvd_msg['u']}, I need to re-broadcast it"
+                            f"MAVCOM: Lora - this message is for {rcvd_msg['u']}, I need to re-broadcast it"
                         )
                         self.broadcast(msg_dict=rcvd_msg)
                         self.store_lora_msg(message=rcvd_msg, rebroadcasted="yes")
@@ -163,7 +163,7 @@ class LoraController:
                         
                     elif rcvd_msg["t"] == "bg":
                         print(
-                            f"i need to re-broadcast this message from {rcvd_msg['f']} to {rcvd_msg['u']}"
+                            f"MAVCOM: Lora - I need to re-broadcast this message from {rcvd_msg['f']} to {rcvd_msg['u']}"
                         )
                         self.broadcast(msg_dict=rcvd_msg)
                         self.store_lora_msg(message=rcvd_msg, rebroadcasted="yes")
@@ -171,7 +171,7 @@ class LoraController:
                         
                     elif rcvd_msg["t"] == "dg" or rcvd_msg["t"] == "du":
                         print(
-                            f"message heard from {rcvd_msg['f']}, to {rcvd_msg['u']} - {rcvd_msg['m']}"
+                            f"MAVCOM: Lora - message heard from {rcvd_msg['f']}, to {rcvd_msg['u']} - {rcvd_msg['m']}"
                         )
                         
                     else:
@@ -179,15 +179,15 @@ class LoraController:
                         raise UnknownTxMode(rcvd_msg["t"])
                 except UnknownTxMode as utx:
                     message_processed = True
-                    print(utx)
+                    print("MAVCOM: Lora - ", utx)
                 finally:
                     # if unit received a message that isn't just an ack, or receives a broadcast meant for ALL units, send an ack
                     if rcvd_msg["m"] != "lora_ack" or (rcvd_msg["t"] == "bu" and rcvd_msg["u"] == "all"):
                         self.transmit(msg=None, ack_to=rcvd_msg['f'], send_ack=True)
-                        print(f"listener {socket.gethostname()} sent ack")
+                        print(f"MAVCOM: Lora - listener {socket.gethostname()} sent ack")
                     else:
                         self.awaiting_ack = False
-                        print(f"listener {socket.gethostname()}: ack received from {rcvd_msg['u']}")
+                        print(f"MAVCOM: Lora - listener {socket.gethostname()}: ack received from {rcvd_msg['u']}")
                         
                     
 
