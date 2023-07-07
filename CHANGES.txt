@@ -17,3 +17,6 @@
 - Mavcom telemetry thread now runs as daemon if a controller object is passed, else it runs as non-daemon in order to terminate when caller application terminates
 - hud_update_thread renamed to hud_updates; more semantic for users/developers to call `hud_updates.start()`
 - Docstrings updated
+
+1.1.4
+- Add HOME_POSITION to mandatory message types
