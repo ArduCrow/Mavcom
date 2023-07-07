@@ -11,20 +11,20 @@ class Recorder():
     Parameters
     ----------
     
-    `controller`: This should be the upstream class that instantiates the Recorder instance. By passing itself to
-    the Recorder instance, the Recorder can access its attributes.
+    - `controller`: This should be the upstream Mavcom instance of whatever object or script is controlling the vehicle. 
+    By passing itself to the Recorder instance, the Recorder can access its attributes.
     
-    `top_text`: text that will be overlaid on this position of the video capture.
+    - `top_text`: text that will be overlaid on this position of the video capture.
     
-    `centre_text`: text that will be overlaid on this position of the video capture.
+    - `centre_text`: text that will be overlaid on this position of the video capture.
     
-    `bottom_text`: text that will be overlaid on this position of the video capture.
+    - `bottom_text`: text that will be overlaid on this position of the video capture.
     
-    `filename`: OPTIONAL - the desired filename. If none is set, it will create a folder 'recordings'
+    - `filename`: OPTIONAL - the desired filename. If none is set, it will create a folder 'recordings'
     in the directory the program was started in and save recordings as `[hostname]-n` where 'n' is the n number of recordings in
     the folder plus 1.
     
-    `show_video`: boolean True or False, only really for testing; shows the video output on-screen.
+    - `show_video`: boolean True or False, only really for testing; shows the video output on-screen.
     """
     
     def __init__(self, controller: object = None, top_text = None, centre_text = None, bottom_text = None, filename=None, show_video=False) -> None:
@@ -37,7 +37,7 @@ class Recorder():
         
         
         self.recording = threading.Thread(target=self.record, daemon=True)
-        self.hud_update_thread = threading.Thread(target=self.hud_updater, daemon=True)
+        self.hud_updates = threading.Thread(target=self.hud_updater, daemon=True)
         
         os.makedirs("recordings", exist_ok=True)
         if filename is None:
@@ -46,7 +46,7 @@ class Recorder():
         
     def record(self) -> None:
         """
-        Start recording video.
+        Start recording video. Start by calling `start()` on recording thread.
         """
         self.video_active = True
         font_scale = 2
@@ -91,18 +91,21 @@ class Recorder():
         Parameters
         ----------
         
-        text_pos: the position of the text to modify/overlay. Options:
-        `top_text`
-        `centre_text`
-        `bottom_text`
+        - `text_pos`: the position of the text to modify/overlay. Options:
         
-        text_content: the content to put into this position
+            - `top_text`
+            
+            - `centre_text`
+            - `bottom_text`
+        
+        - `text_content`: the content to put into this position
         """
         setattr(self, text_pos, text_content)
         
     def hud_updater(self) -> None:
         """
         Continually updates the top text overlay of the video with name, alt and speed information.
+        Start by calling `start()` on hud_updates thread.
         """
         while self.video_active:
             try:
