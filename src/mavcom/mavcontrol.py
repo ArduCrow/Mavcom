@@ -16,16 +16,16 @@ class Mavcom:
     Parameters
     ----------
     
-    `controller`: Object. If you are using an upstream class to utilise the Mavcom control functions, pass
+    - `controller`: Object. If you are using an upstream class to utilise the Mavcom control functions, pass
     this object as "self".
     
-    `required_message_types`: List[string]. If there are any additional Mavlink messages your code needs the data from,
+    - `required_message_types`: List[string]. If there are any additional Mavlink messages your code needs the data from,
     enter them as a list to this parameter.
     
-    `connection_path`: String. This is the path to connect to the Mavlink stream from the flight controller. A typical serial
+    - `connection_path`: String. This is the path to connect to the Mavlink stream from the flight controller. A typical serial
     connection will look like "/dev/ttyS0". A SITL connection will look like "127.0.0.1:14551".
     
-    `baud`: Int. This is the baud rate which the flight controller is using. This must match.
+    - `baud`: Int. This is the baud rate which the flight controller is using. This must match.
     """
 
     def __init__(self,
@@ -46,12 +46,13 @@ class Mavcom:
         self.required_message_types = required_message_types + [m for m in mandatory_message_types if m not in required_message_types]
         self.current_values = defaultdict(lambda: None)
         self.controller = controller
+        has_controller = True if controller else False
         
         self._flight_mode = None
         self._motors_armed = False
         self.airframe = None
         
-        self.telemetry_thread = threading.Thread(target=self._monitor_mavlink_messages, daemon=True)
+        self.telemetry_thread = threading.Thread(target=self._monitor_mavlink_messages, daemon=has_controller)
 
         self.connection = mavutil.mavlink_connection(connection_path, baud=baud)
         self._get_heartbeat()
@@ -60,6 +61,9 @@ class Mavcom:
         """
         Starts listening to the Mavlink messages from the flight controller. Has a small delay
         so that Mavcom can populate required data types. Call this function first.
+        
+        If a controller object was passed to this Mavcom instance, the telemetry thread will run as a daemon
+        so that it exits when the caller object terminates.
         """
         print("MAVCOM: Mavcom active")
         self.telemetry_thread.start()
@@ -116,7 +120,7 @@ class Mavcom:
         Parameters
         ----------
         
-        `alt`: Integer. Altitude in meters to takeoff to.
+        - `alt`: Integer. Altitude in meters to takeoff to.
         """
         print(f"MAVCOM: Takeoff to {alt}m relative")
         self.connection.mav.command_long_send(0, 0, mavutil.mavlink.MAV_CMD_NAV_TAKEOFF,
@@ -131,11 +135,11 @@ class Mavcom:
         Parameters
         ----------
         
-        `location`: Tuple[float]. The latitude, longitude to travel to.
+        - `location`: Tuple[float]. The latitude, longitude to travel to.
         
-        `alt': Integer. Altitude AGL to achieve at the destination.
+        - `alt': Integer. Altitude AGL to achieve at the destination.
         
-        `groundspeed`: Integer. Groundspeed in meters per second to travel at.
+        - `groundspeed`: Integer. Groundspeed in meters per second to travel at.
         """
         print(f"MAVCOM: Travel to {location}, {alt}m AGL relative")
         self.connection.mav.mission_item_send(0, 0, 0, mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT,
@@ -149,7 +153,7 @@ class Mavcom:
         """
         Sets the groundspeed the vehicle will travel at.
         
-        `speed`: Integer. Meters per second.
+        - `speed`: Integer. Meters per second.
         """
         self.connection.mav.command_long_encode(
             0, 0,
@@ -267,14 +271,17 @@ class Mavcom:
     def nav_state(self):
         """
         The current state of the navigation system.
+
+        Attributes
+        ----------
         
-        `eph`: standard deviation of horizontal position error (meters)
+        - `eph`: standard deviation of horizontal position error (meters)
         
-        `epv`: standard deviation of vertical position error (meters)
+        - `epv`: standard deviation of vertical position error (meters)
         
-        `fix_type`: 0-8 numerical representation of GPS fix type/quality
+        - `fix_type`: 0-8 numerical representation of GPS fix type/quality
         
-        `satellites_visible`: number of satellites currently visible
+        - `satellites_visible`: number of satellites currently visible
         """
         if "GPS_RAW_INT" not in self.current_values:
             return "GPS not initialised"
@@ -290,18 +297,21 @@ class Mavcom:
     def vehicle_state(self):
         """
         The current travel state of the vehicle.
+
+        Attributes
+        ----------
         
-        `alt`: altitude AGL relative to home position
+        - `alt`: altitude AGL relative to home position
         
-        `groundspeed`: groundspeed in m/s
+        - `groundspeed`: groundspeed in m/s
 
-        `vertical_speed`: ascend/descend speed in m/s
+        - `vertical_speed`: ascend/descend speed in m/s
 
-        `heading`: heading in degrees
+        - `heading`: heading in degrees
 
-        `lat`: latitude in decimal format
+        - `lat`: latitude in decimal format
 
-        `lon`: longitude in decimal format
+        - `lon`: longitude in decimal format
         """
         alt = self.current_values['GLOBAL_POSITION_INT']['relative_alt'] / 1000
         groundspeed = self.current_values["VFR_HUD"]['groundspeed']
