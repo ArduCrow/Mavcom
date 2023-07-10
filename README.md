@@ -21,7 +21,7 @@ from mavcom.mavcontrol import Mavcom
 import time
 
 vehicle = Mavcom(
-    connection_path = "127.0.0.1:14551",
+    connection_path = "127.0.0.1:14550",
 )
 
 vehicle.start()
