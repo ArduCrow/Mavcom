@@ -20,7 +20,7 @@ Run SITL:
 from mavcom import mavcontrol
 import time
 
-vehicle = mavcom.Mavcom(
+vehicle = mavcontrol.Mavcom(
     connection_path = "127.0.0.1:14551",
 )
 
