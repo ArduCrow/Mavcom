@@ -4,7 +4,7 @@ import time
 
 from typing import List
 from collections import defaultdict
-from mavcom.mavconstants import AIRFRAME_TYPES, MODE_MAP
+from src.mavcom.mavconstants import AIRFRAME_TYPES, MODE_MAP
 from pymavlink.dialects.v10 import ardupilotmega
 
 class Mavcom:
@@ -291,14 +291,14 @@ class Mavcom:
             "eph": self.current_values['GPS_RAW_INT']['eph'],
             "epv": self.current_values['GPS_RAW_INT']['epv'],
             "fix_type": self.current_values['GPS_RAW_INT']['fix_type'],
-            "satellites_visible": self.current_values['GPS_RAW_INT']['satellites_visible']
+            "satellites_visible": self.current_values['GPS_RAW_INT']['satellites_visible'],
         }
         return NavState(navdata['eph'], navdata['epv'], navdata['fix_type'], navdata['satellites_visible'])
     
     @property
-    def vehicle_state(self):
+    def motion_state(self):
         """
-        The current travel state of the vehicle.
+        The current position & motion state of the vehicle.
 
         Attributes
         ----------
@@ -321,7 +321,7 @@ class Mavcom:
         heading = self.current_values['GLOBAL_POSITION_INT']['hdg']
         lat = self.current_values['GLOBAL_POSITION_INT']['lat'] / 1e7
         lon = self.current_values['GLOBAL_POSITION_INT']['lon'] / 1e7
-        return VehicleState(alt=alt, groundspeed=groundspeed, vertical_speed=vertical_speed, heading=heading, lat=lat, lon=lon)
+        return MotionState(alt=alt, groundspeed=groundspeed, vertical_speed=vertical_speed, heading=heading, lat=lat, lon=lon)
     
     @property
     def battery_state(self):
@@ -358,7 +358,7 @@ class NavState(object):
             "satellites_visible": self.satellites_visible
         }
         
-class VehicleState(object):
+class MotionState(object):
     
     def __init__(self, alt, groundspeed, vertical_speed, heading, lat, lon) -> None:
         self.alt = alt
