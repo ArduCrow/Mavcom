@@ -1,4 +1,4 @@
-from mavcom.mavcontrol import Mavcom
+from src.mavcom.mavcontrol import Mavcom
 from multiprocessing import Process
 import time
 import os
@@ -27,6 +27,11 @@ def test_vehicle_ready():
             time.sleep(2)
             pass
     assert vehicle.ready
+    
+def test_battery_state():
+    assert vehicle.battery_state.voltage > 0
+    assert vehicle.battery_state.current is not None
+    assert vehicle.battery_state.remaining > 0
     
 def test_set_flight_mode():
     vehicle.flight_mode = "GUIDED"
