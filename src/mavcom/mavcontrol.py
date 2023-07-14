@@ -42,7 +42,8 @@ class Mavcom:
             "GPS_RAW_INT",
             "EKF_STATUS_REPORT",
             "VFR_HUD",
-            "HOME_POSITION"
+            "HOME_POSITION",
+            "SYS_STATUS",
         ]
         self.required_message_types = required_message_types + [m for m in mandatory_message_types if m not in required_message_types]
         self.current_values = defaultdict(lambda: None)
@@ -322,6 +323,25 @@ class Mavcom:
         lon = self.current_values['GLOBAL_POSITION_INT']['lon'] / 1e7
         return VehicleState(alt=alt, groundspeed=groundspeed, vertical_speed=vertical_speed, heading=heading, lat=lat, lon=lon)
     
+    @property
+    def battery_state(self):
+        """
+        The current state of the battery.
+
+        Attributes
+        ----------
+        
+        - `voltage`: battery voltage in volts
+        
+        - `current`: battery current in amps
+        
+        - `remaining`: remaining battery percentage
+        """
+        voltage = self.current_values['SYS_STATUS']['voltage_battery'] / 1000
+        current = self.current_values['SYS_STATUS']['current_battery'] / 100
+        remaining = self.current_values['SYS_STATUS']['battery_remaining']
+        return BatteryState(voltage=voltage, current=current, remaining=remaining)
+    
 class NavState(object):
     
     def __init__(self, eph, epv, fix_type, satellites_visible) -> None:
@@ -354,3 +374,20 @@ class ModeError(Exception):
         
     def __str__(self):
         return(repr(self.value))
+    
+class BatteryState(object):
+    """
+    The current state of the battery.
+    
+    Attributes
+    ----------
+    
+    - `voltage`: voltage in millivolts
+    - `current`: current in centiamps
+    - `remaining`: list of cell voltages in millivolts
+    """
+    def __init__(self, voltage, current, remaining) -> None:
+        self.voltage = voltage
+        self.current = current
+        self.remaining = remaining
+        return super().__init__()
