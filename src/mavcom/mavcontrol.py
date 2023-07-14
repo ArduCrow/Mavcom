@@ -4,7 +4,7 @@ import time
 
 from typing import List
 from collections import defaultdict
-from src.mavcom.mavconstants import AIRFRAME_TYPES, MODE_MAP
+from mavcom.mavconstants import AIRFRAME_TYPES, MODE_MAP
 from pymavlink.dialects.v10 import ardupilotmega
 
 class Mavcom:
