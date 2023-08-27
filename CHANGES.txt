@@ -20,3 +20,6 @@
 
 1.1.4
 - Add HOME_POSITION to mandatory message types
+
+1.1.6
+- Change way of prompting HOME_POSITION

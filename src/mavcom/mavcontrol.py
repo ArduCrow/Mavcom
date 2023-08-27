@@ -53,6 +53,7 @@ class Mavcom:
         self._flight_mode = None
         self._motors_armed = False
         self.airframe = None
+        self.data_rate = 120
         
         self.telemetry_thread = threading.Thread(target=self._monitor_mavlink_messages, daemon=has_controller)
 
@@ -68,6 +69,8 @@ class Mavcom:
         so that it exits when the caller object terminates.
         """
         print("MAVCOM: Mavcom active")
+        self.connection.mav.request_data_stream_send(self.connection.target_system, self.connection.target_component,
+                                        mavutil.mavlink.MAV_DATA_STREAM_ALL, self.data_rate, 1)
         self.telemetry_thread.start()
         time.sleep(3)
 
@@ -80,7 +83,7 @@ class Mavcom:
         self.current_values['HEARTBEAT'] = hb.to_dict()
         
         self.airframe = AIRFRAME_TYPES[self.current_values['HEARTBEAT']['type']]
-        self.flight_mode = MODE_MAP[self.airframe][self.current_values["HEARTBEAT"]["custom_mode"]]
+        # self.flight_mode = MODE_MAP[self.airframe][self.current_values["HEARTBEAT"]["custom_mode"]] # Removed, don't set the mode
 
     def _monitor_mavlink_messages(self):
 
@@ -98,18 +101,13 @@ class Mavcom:
         FC will only send home position message a few times during initialisation.
         Prompt it to transmit and capture it.
         """
-        i = 0
-        while "HOME_POSITION" not in self.current_values:
-            self.connection.mav.command_long_send(
-                self.connection.target_system,
-                self.connection.target_component,
-                mavutil.mavlink.MAV_CMD_GET_HOME_POSITION,
-                0,0,0,0,0,0,0,0
-            )
-            time.sleep(0.5)
-            i += 1
-            if i > 10:
-                break
+        self.connection.mav.command_long_send(
+            self.connection.target_system,
+            self.connection.target_component,
+            mavutil.mavlink.MAV_CMD_REQUEST_MESSAGE,
+            242,0,0,0,0,0,0,0
+        )
+        time.sleep(0.5)
         home_position = self.current_values['HOME_POSITION']
         return home_position
 
