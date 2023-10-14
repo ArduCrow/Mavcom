@@ -48,7 +48,6 @@ class LoraController:
 
     def __init__(self, port="/dev/ttyS1") -> None:
         self.awaiting_ack = False
-        self.awaiting_ack = False
         self.ack_timeout = 8
         self.port = port
 
