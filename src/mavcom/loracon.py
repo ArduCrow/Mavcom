@@ -5,6 +5,28 @@ import socket
 import threading
 from datetime import datetime
 
+class RadioNotFound(Exception):
+    def __init__(self, message: str) -> None:
+        self.message = message
+
+    def __str__(self) -> str:
+        return f"No Lora radio found: {self.message}"
+    
+class RecipientNotAck(Exception):
+    # def __init__(self, *args: object) -> None:
+    #     super().__init__(*args)
+
+    def __str__(self) -> str:
+        return f"No acknowledgement from ground station"
+
+class UnknownTxMode(Exception):
+    def __init__(self, mode, *args: object) -> None:
+        super().__init__(*args)
+        self.mode = mode
+
+    def __str__(self) -> str:
+        return f"Unknown transmit mode in received message: {self.mode}"
+
 
 class LoraController:
     """
@@ -26,17 +48,24 @@ class LoraController:
 
     def __init__(self, port="/dev/ttyS1") -> None:
         self.awaiting_ack = False
+        self.awaiting_ack = False
         self.ack_timeout = 8
         self.port = port
 
         # radio is half duplex; we need to stop the listener if we are transmitting
         self.transmitting = False
 
-        self.radio = serial.Serial(port=f'{self.port}',baudrate = 9600,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,bytesize=serial.EIGHTBITS,timeout=1)
-
-        self.listener = threading.Thread(target=self.receive)
+        try:
+            self.radio = serial.Serial(port=f'/dev/{self.port}',baudrate = 9600,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,bytesize=serial.EIGHTBITS,timeout=1)
+            self.listener = threading.Thread(target=self.receive)
+            print(f"MAVCOM: Lora connected on {self.port}")
+            
+        except Exception as err:
+            print(f"MAVCOM: Lora error: {err}")
+            self.raise_error(err=err, err_type=RadioNotFound)
         
-        print(f"MAVCOM: Lora connected on {self.port}")
+    def raise_error(self, err: str, err_type: Exception) -> Exception:
+        return err_type(message=err)
         
     def start(self):
         self.listener.start()
@@ -245,26 +274,6 @@ class LoraController:
             if m['time'] == timestamp:
                 m['rebroadcasted'] = "yes"
         
-        
-
-
-class RecipientNotAck(Exception):
-    # def __init__(self, *args: object) -> None:
-    #     super().__init__(*args)
-
-    def __str__(self) -> str:
-        return f"No acknowledgement from ground station"
-
-
-class UnknownTxMode(Exception):
-    def __init__(self, mode, *args: object) -> None:
-        super().__init__(*args)
-        self.mode = mode
-
-    def __str__(self) -> str:
-        return f"Unknown transmit mode in received message: {self.mode}"
-
-
 if __name__ == "__main__":
     lora = LoraController()
     lora.start()
