@@ -5,7 +5,7 @@ import numpy as np
 
 from typing import List
 from collections import defaultdict
-from autopilots.ardupilot.mavconstants import AIRFRAME_TYPES, MODE_MAP
+from .mavconstants import AIRFRAME_TYPES, MODE_MAP
 from pymavlink.dialects.v10 import ardupilotmega
 
 class Quaternion:
@@ -36,7 +36,7 @@ class Quaternion:
         return cls(qw, qx, qy, qz)
 
 
-class Mav:
+class Mavcom:
     """
     The primary Mavlink communication and control object. This class connects to the flight controller
     and sends/receives Mavlink messages. Information from required/desired messages is stored and kept up
