@@ -84,7 +84,7 @@ class Mavcom:
         self._flight_mode = None
         self._motors_armed = False
         self.airframe = None
-        self.data_rate = 120
+        self.data_rate = 200
 
         self.telemetry_thread = threading.Thread(
             target=self._monitor_mavlink_messages, daemon=has_controller
@@ -114,7 +114,15 @@ class Mavcom:
 
     def _get_heartbeat(self):
         print("MAVCOM: Waiting for heartbeat...")
-        self.connection.wait_heartbeat()
+        self.connection.mav.command_long_send(
+            self.connection.target_system,
+            self.connection.target_component,
+            mavutil.mavlink.MAV_CMD_REQUEST_MESSAGE,
+            242,  # Confirmation (set to 0 if no confirmation needed)
+            mavutil.mavlink.MAVLINK_MSG_ID_HEARTBEAT,  
+            0, 0, 0, 0, 0, 0
+        )
+        self.connection.wait_heartbeat(timeout=5)
         print(
             f"MAVCOM: Heartbeat from system (system {self.connection.target_system} "
             f"component {self.connection.target_component})"
