@@ -73,6 +73,7 @@ class Mavcom:
             "VFR_HUD",
             "HOME_POSITION",
             "SYS_STATUS",
+            "ATTITUDE",
         ]
         self.required_message_types = required_message_types + [
             m for m in mandatory_message_types if m not in required_message_types
