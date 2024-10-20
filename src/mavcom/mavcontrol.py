@@ -82,6 +82,7 @@ class Mavcom:
         has_controller = True if controller else False
 
         self._flight_mode = None
+        self.flight_controller_current_mode = None # separate to _flight_mode, to allow upstream controllers to check the mode without setting it
         self._motors_armed = False
         self.airframe = None
         self.data_rate = 200
@@ -145,6 +146,7 @@ class Mavcom:
                 self.current_values["HEARTBEAT"]["base_mode"]
                 & mavutil.mavlink.MAV_MODE_FLAG_SAFETY_ARMED
             ) != 0
+            self.flight_controller_current_mode = MODE_MAP[self.airframe][self.current_values["HEARTBEAT"]["custom_mode"]]
 
     def get_home_pos(self):
         """
@@ -422,7 +424,11 @@ class Mavcom:
             raise ModeError(mode)
         self.connection.set_mode(m)
         self._flight_mode = m
-        print("MAVCOM: Flight mode SET:", mode)
+        # print("MAVCOM: Flight mode SET:", mode)
+        
+    @flight_mode.getter
+    def flight_mode(self):
+        return self._flight_mode
 
     def _match_mode(self, mode):
         for mode_dict in MODE_MAP.values():
