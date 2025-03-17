@@ -1,3 +1,4 @@
+import random
 from src.mavcom.mavcontrol import Mavcom
 from multiprocessing import Process
 import time
@@ -11,7 +12,7 @@ sim.start()
 print(sim.pid)
 
 vehicle = Mavcom(
-    connection_path="127.0.0.1:14551"
+    connection_path="127.0.0.1:14550"
 )
 vehicle.start()
 time.sleep(1)
@@ -63,6 +64,17 @@ def test_takeoff():
         else: 
             break
     assert vehicle.motion_state.alt >= 4.9
+    
+def test_set_rc_channels():
+    current_channels = vehicle.current_values["RC_CHANNELS"]
+    current_channels = [current_channels[key] for key in current_channels.keys()]
+    print(current_channels)
+    vehicle.set_rc_channels([random.randint(1000,2000), random.randint(1000,2000), random.randint(1000,2000), random.randint(1000,2000), random.randint(1000,2000), random.randint(1000,2000), random.randint(1000,2000), random.randint(1000,2000)])
+    time.sleep(1)
+    new_channels = vehicle.current_values["RC_CHANNELS"]
+    new_channels = [new_channels[key] for key in new_channels.keys()]
+    print(new_channels)
+    assert current_channels[0:8] != new_channels[0:8]
     
 def test_sim_terminated():
     sim.join()

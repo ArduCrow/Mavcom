@@ -74,6 +74,7 @@ class Mavcom:
             "HOME_POSITION",
             "SYS_STATUS",
             "ATTITUDE",
+            "RC_CHANNELS"
         ]
         self.required_message_types = required_message_types + [
             m for m in mandatory_message_types if m not in required_message_types
@@ -330,6 +331,19 @@ class Mavcom:
             0,  # pitch rate
             0,  # yaw rate,
             normalized_thrust,
+        )
+        
+    def set_rc_channels(self, channels: List[int]):
+        """
+        Set the RC channels to the specified values. Sends RC_CHANNELS_OVERRIDE message to the FC.
+
+        Parameters:
+        - `channels`: List of integers representing the RC channel values.
+        """
+        self.connection.mav.rc_channels_override_send(
+            self.connection.target_system,
+            self.connection.target_component,
+            *channels
         )
 
     def _arm_disarm(self, force=False):

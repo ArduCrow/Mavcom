@@ -4,10 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mavcom"
-version = "1.1.7"
+version = "1.1.8"
 description = "A python package that creates a simplified programming interface for controlling Mavlink-capable flight controllers"
 readme = "README.md"
-authors = [{ name = "Mavscient", email = "mavscient@xee4c.33mail.com" }]
+authors = [{ name = "ArduCrow", email = "arducrow@xee4c.33mail.com" }]
 license = { file = "LICENSE" }
 classifiers = [
     "License :: OSI Approved :: MIT License",
@@ -25,7 +25,7 @@ requires-python = ">=3.9"
 dev = ["black", "pip-tools", "pytest"]
 
 [project.urls]
-Homepage = "https://github.com/Vefot/Mavcom"
+Homepage = "https://github.com/ArduCrow/Mavcom"
 
 [project.scripts]
 realpython = "reader.__main__:main"

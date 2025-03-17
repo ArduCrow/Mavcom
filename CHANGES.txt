@@ -26,3 +26,6 @@
 
 1.1.7
 - Add exception handler to init of loracon if module not found
+
+1.1.8
+- Add function to set rc channels
